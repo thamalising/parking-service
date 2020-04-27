@@ -2,18 +2,36 @@ package com.tmz.parkingservice.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Location {
     @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
 
     @JsonProperty("lon")
     private double longitude;
+
     @JsonProperty("lat")
     private double latitude;
+
+    @JsonProperty("lname")
+    private String locationName;
+
+    @JsonProperty("city")
+    private String city;
+
+    @JsonProperty("slots")
+    private int numOfSlots;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public double getLongitude() {
         return longitude;
@@ -31,18 +49,32 @@ public class Location {
         this.latitude = latitude;
     }
 
-    public void print()
-    {
-        System.out.println("id :" + id);
-        System.out.println("longitude :" + longitude);
-        System.out.println("latitude :" + latitude);
+    public String getLocationName() {
+        return locationName;
     }
 
-    public int getId() {
-        return id;
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public int getNumOfSlots() {
+        return numOfSlots;
+    }
+
+    public void setNumOfSlots(int numOfSlots) {
+        this.numOfSlots = numOfSlots;
+    }
+
+    @Override
+    public String toString() {
+        return  "[id:" + id +", lon:"+ longitude+", lat:" + latitude+", lname:" + locationName+", city:" + city+", slots:" + numOfSlots + "]";
     }
 }
