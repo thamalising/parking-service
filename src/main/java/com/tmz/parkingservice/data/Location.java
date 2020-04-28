@@ -25,6 +25,17 @@ public class Location {
     @JsonProperty("slots")
     private int numOfSlots;
 
+    @JsonProperty("enable")
+    private boolean enable = true;
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
     public int getId() {
         return id;
     }
