@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 
 @Entity
+@Table(name="location")
 public class Location {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -27,6 +28,18 @@ public class Location {
 
     @JsonProperty("enable")
     private boolean enable = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="warden_idd", nullable = true)
+    private Warden warden;
+
+    public Warden getWarden() {
+        return warden;
+    }
+
+    public void setWarden(Warden warden) {
+        this.warden = warden;
+    }
 
     public boolean isEnable() {
         return enable;

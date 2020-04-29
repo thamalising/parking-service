@@ -2,12 +2,12 @@ package com.tmz.parkingservice.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name="warden")
 public class Warden {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -27,6 +27,17 @@ public class Warden {
 
     @JsonProperty("email")
     private String email;
+
+//    @OneToMany(mappedBy="id")
+//    private List<Location> slots;
+//
+//    public List<Location> getSlots() {
+//        return slots;
+//    }
+//
+//    public void setSlots(List<Location> slots) {
+//        this.slots = slots;
+//    }
 
     public int getId() {
         return id;

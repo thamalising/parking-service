@@ -5,8 +5,11 @@ import com.tmz.parkingservice.dao.WardenRepo;
 import com.tmz.parkingservice.data.Location;
 import com.tmz.parkingservice.data.Warden;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.apache.log4j.Logger;
@@ -20,20 +23,20 @@ public class AdminController {
 
     final static Logger logger = Logger.getLogger(AdminController.class);
 
-    @PostMapping("/locations")
+    @RequestMapping(value = "/locations",method = RequestMethod.POST)
     public Location addLocation(@RequestBody Location location) {
-        logger.info("addLocation: " + location);
+        logger.info("addLocation: " + location.toString());
         locationRepo.save(location);
         logger.debug("addLocation: " + location.toString());
         return location;
     }
 
-    @GetMapping("/locations")
-    public List<Location> getLocations() {
+    @RequestMapping(value = "/locations",method = RequestMethod.GET)
+    public ResponseEntity<List<Location>> getLocations() {
         List<Location> ret = locationRepo.findAll();
         logger.debug("getLocations: " + ret);
         logger.info("getLocations: success");
-        return ret;
+        return new ResponseEntity<>(ret,HttpStatus.OK);
     }
 
     @GetMapping("/locations/{xx}")
@@ -107,9 +110,45 @@ public class AdminController {
         return warden;
     }
 
-    @DeleteMapping("/wardens/{xx}")
+    @RequestMapping(value = "/wardens/{xx}", method = RequestMethod.DELETE)
     public String deleteWarden(@PathVariable("xx") int id) {
         wardenRepo.deleteById(id);
         return id + " deleted";
+    }
+
+    @RequestMapping(value = "/assign", method = RequestMethod.PUT)
+    public ResponseEntity<String> assignSlots(@RequestParam("warden-id") int xx, @RequestBody Location location){
+        // check whether warden is valid
+        Warden w = wardenRepo.findById(xx).orElse(null);
+        if (w == null) {
+            // no warden found fo xx id
+            logger.error("assign: id:" + xx + " not found");
+            return new ResponseEntity<>("warden not found", HttpStatus.NOT_FOUND);
+        }
+        logger.info("assign: id:" + xx + " warden found");
+        // priority for the id, location is checked by id
+        Location l = locationRepo.findById(location.getId()).orElse(null);
+        if (l != null) {
+            // location found for id xx
+            l.setWarden(w);
+            locationRepo.save(l);
+            return new ResponseEntity<>("assign by id " +xx+" success", HttpStatus.OK);
+        }
+
+        // check location name is valid?
+        if (location.getLocationName().isEmpty()) {
+            logger.error("assign: name not found");
+            return new ResponseEntity<>("name not found", HttpStatus.NOT_FOUND);
+        }
+
+        // get all locations
+        List<Location> ls=locationRepo.findAll();
+        for (Location l2:ls){
+            if (location.getLocationName().equalsIgnoreCase(l2.getLocationName())) {
+                l2.setWarden(w);
+                locationRepo.save(l2);
+            }
+        }
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 }
