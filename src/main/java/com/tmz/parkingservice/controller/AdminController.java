@@ -3,6 +3,7 @@ package com.tmz.parkingservice.controller;
 import com.tmz.parkingservice.dao.LocationRepo;
 import com.tmz.parkingservice.dao.WardenRepo;
 import com.tmz.parkingservice.data.Location;
+import com.tmz.parkingservice.data.Test;
 import com.tmz.parkingservice.data.Warden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.apache.log4j.Logger;
+import org.springframework.web.servlet.function.EntityResponse;
 
 @RestController
 public class AdminController {
@@ -23,100 +25,128 @@ public class AdminController {
 
     final static Logger logger = Logger.getLogger(AdminController.class);
 
-    @RequestMapping(value = "/locations",method = RequestMethod.POST)
-    public Location addLocation(@RequestBody Location location) {
+    @PostMapping("/test")
+    public ResponseEntity<Test> test(@RequestBody Test test) {
+        logger.info("test: " + test.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(test);
+    }
+
+    @PostMapping("/locations")
+    public ResponseEntity<Location> addLocation(@RequestBody Location location) {
         logger.info("addLocation: " + location.toString());
         locationRepo.save(location);
         logger.debug("addLocation: " + location.toString());
-        return location;
+        return ResponseEntity.status(HttpStatus.OK).body(location);
     }
 
-    @RequestMapping(value = "/locations",method = RequestMethod.GET)
+    @GetMapping("/locations")
     public ResponseEntity<List<Location>> getLocations() {
         List<Location> ret = locationRepo.findAll();
         logger.debug("getLocations: " + ret);
         logger.info("getLocations: success");
-        return new ResponseEntity<>(ret,HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
     @GetMapping("/locations/{xx}")
-    public Optional<Location> getLocation(@PathVariable("xx") int id) {
-        Optional<Location> location = locationRepo.findById(id);
+    public ResponseEntity<Location> getLocation(@PathVariable("xx") int id) {
+        Location location = locationRepo.findById(id).orElse(null);
         if (location == null) {
             logger.error("getLocation: failed id:" + id );
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(location);
         }
         logger.info("getLocation: success id:" + id);
         logger.debug("getLocation: success id:" + id + " location:" + location.toString());
-        return location;
+        return new ResponseEntity<>(location, HttpStatus.OK);
     }
 
     @PutMapping("/location")
-    public Location saveOrUpdate(@RequestParam("xx") int xx, @RequestBody Location location) {
+    public ResponseEntity<Location> updateLocation(@RequestParam("xx") int xx, @RequestBody Location location) {
         Location l = locationRepo.findById(xx).orElse(null);
-        l.setLatitude(location.getLatitude());
+        if (l == null) {
+            logger.error("updateLocation: cannot find xx:"+xx);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(location);
+        }
+        if (!location.getLocationName().isEmpty())
+            l.setLocationName(location.getLocationName());
+        if(location.getLatitude() > 0)
+            l.setLatitude(location.getLatitude());
+        if(location.getLongitude()>0)
+            l.setLongitude(location.getLongitude());
+        if(location.getCity().isEmpty())
+            l.setCity(location.getCity());
+        if(location.getNumOfSlots()>0)
+            l.setNumOfSlots(location.getNumOfSlots());
+        l.setWarden(null);
         locationRepo.save(l);
-        return location;
-    }
-
-    @PutMapping("/location-ex")
-    public Location saveOrUpdate(@RequestBody Location location) {
-        locationRepo.save(location);
-        return location;
+        logger.info("updateLocation: updated success xx:"+xx+ " location:"+l.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(l);
     }
 
     @DeleteMapping("/location/{xx}")
-    public String delete(@PathVariable("xx") int id) {
+    public ResponseEntity<String> deleteLocation(@PathVariable("xx") int id) {
+        Location l = locationRepo.findById(id).orElse(null);
+        if (l==null){
+            logger.error("deleteLocation:  cannot find:"+id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("cannot find: "+id);
+        }
+
         locationRepo.deleteById(id);
-        return id + " deleted";
+        logger.info("deleteLocation: deleted: "+ id);
+        return ResponseEntity.status(HttpStatus.OK).body("deleted: "+ id);
     }
+
     @DeleteMapping("locations")
     public void deleteAll()
     {
         locationRepo.deleteAll();
+        logger.info("deleteAll: success");
     }
 
     @PutMapping("/slot-enable")
-    public Boolean enableSlot(@RequestParam("xx") int xx, @RequestBody Location location){
+    public ResponseEntity<String> enableSlot(@RequestParam("xx") int xx, @RequestBody Location location){
         Location l = locationRepo.findById(xx).orElse(null);
         if (l == null) {
             logger.error("enableSlot failed, id:" + xx + " not found");
-            return !location.isEnable();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
         }
         logger.info("enableSlot success, id:" + xx + " enable:" + location.isEnable());
         l.setEnable(location.isEnable());
         locationRepo.save(l);
-        return location.isEnable();
-
+        return ResponseEntity.status(HttpStatus.OK).body("location enable:"+location.isEnable());
     }
 
     @GetMapping("/wardens")
-    public List<Warden> getWardens() {
+    public ResponseEntity<List<Warden>> getWardens() {
         List<Warden> ret = wardenRepo.findAll();
-        logger.debug("getWardens: " + ret);
         logger.info("getWardens: success");
-        return ret;
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
     @GetMapping("/wardens/{xx}")
-    public Optional<Warden> getWarden(@PathVariable("xx") int id) {
-        Optional<Warden> warden = wardenRepo.findById(id);
+    public ResponseEntity<Warden> getWarden(@PathVariable("xx") int id) {
+        Warden warden = wardenRepo.findById(id).orElse(null);
         if (warden == null) {
             logger.error("getWarden: failed id:" + id );
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         logger.info("getWarden: success id:" + id);
         logger.debug("getWarden: success id:" + id + " warden:" + warden.toString());
-        return warden;
+        return ResponseEntity.status(HttpStatus.OK).body(warden);
     }
 
-    @RequestMapping(value = "/wardens/{xx}", method = RequestMethod.DELETE)
-    public String deleteWarden(@PathVariable("xx") int id) {
+    @DeleteMapping("/wardens/{xx}")
+    public ResponseEntity<String> deleteWarden(@PathVariable("xx") int id) {
+        Warden warden = wardenRepo.findById(id).orElse(null);
+        if (warden==null) {
+            logger.error("deleteWarden: cannot find " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found " + id);
+        }
         wardenRepo.deleteById(id);
-        return id + " deleted";
+        logger.info("deleteWarden: deleted: "+id);
+        return ResponseEntity.status(HttpStatus.OK).body("deleted " + id);
     }
 
-    @RequestMapping(value = "/assign", method = RequestMethod.PUT)
+    @PutMapping("/assign")
     public ResponseEntity<String> assignSlots(@RequestParam("warden-id") int xx, @RequestBody Location location){
         // check whether warden is valid
         Warden w = wardenRepo.findById(xx).orElse(null);
