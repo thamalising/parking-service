@@ -29,6 +29,17 @@ public class Warden {
     @JsonProperty("email")
     private String email;
 
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy="id")
+//    private List<Location> slots;
+//
+//    public List<Location> getSlots() {
+//        return slots;
+//    }
+//
+//    public void setSlots(List<Location> slots) {
+//        this.slots = slots;
+//    }
+
     public int getId() {
         return id;
     }

@@ -30,7 +30,7 @@ public class Location {
     @JsonProperty("enable")
     private boolean enable = true;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Warden.class)
+    @ManyToOne(targetEntity = Warden.class)
     @JoinColumn(name="wid")
     private Warden warden;
 

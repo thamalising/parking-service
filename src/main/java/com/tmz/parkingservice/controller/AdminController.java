@@ -59,11 +59,11 @@ public class AdminController {
         return new ResponseEntity<>(location, HttpStatus.OK);
     }
 
-    @PutMapping("/location")
-    public ResponseEntity<Location> updateLocation(@RequestParam("xx") int xx, @RequestBody Location location) {
-        Location l = locationRepo.findById(xx).orElse(null);
+    @PutMapping("/locations/{xx}")
+    public ResponseEntity<Location> updateLocation(@PathVariable("xx") int id, @RequestBody Location location) {
+        Location l = locationRepo.findById(id).orElse(null);
         if (l == null) {
-            logger.error("updateLocation: cannot find xx:"+xx);
+            logger.error("updateLocation: cannot find xx:"+id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(location);
         }
         if (!location.getLocationName().isEmpty())
@@ -78,11 +78,11 @@ public class AdminController {
             l.setNumOfSlots(location.getNumOfSlots());
         l.setWarden(null);
         locationRepo.save(l);
-        logger.info("updateLocation: updated success xx:"+xx+ " location:"+l.toString());
+        logger.info("updateLocation: updated success xx:"+id+ " location:"+l.toString());
         return ResponseEntity.status(HttpStatus.OK).body(l);
     }
 
-    @DeleteMapping("/location/{xx}")
+    @DeleteMapping("/locations/{xx}")
     public ResponseEntity<String> deleteLocation(@PathVariable("xx") int id) {
         Location l = locationRepo.findById(id).orElse(null);
         if (l==null){
@@ -102,17 +102,17 @@ public class AdminController {
         logger.info("deleteAll: success");
     }
 
-    @PutMapping("/slot-enable")
-    public ResponseEntity<String> enableSlot(@RequestParam("xx") int xx, @RequestBody Location location){
-        Location l = locationRepo.findById(xx).orElse(null);
+    @PutMapping("/locations-enable")
+    public ResponseEntity<String> enableSlot(@RequestParam("id") int id, @RequestParam("enable") boolean value){
+        Location l = locationRepo.findById(id).orElse(null);
         if (l == null) {
-            logger.error("enableSlot failed, id:" + xx + " not found");
+            logger.error("enableSlot failed, id:" + id + " not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
         }
-        logger.info("enableSlot success, id:" + xx + " enable:" + location.isEnable());
-        l.setEnable(location.isEnable());
+        logger.info("enableSlot success, id:" + id + " enable:" + value);
+        l.setEnable(value);
         locationRepo.save(l);
-        return ResponseEntity.status(HttpStatus.OK).body("location enable:"+location.isEnable());
+        return ResponseEntity.status(HttpStatus.OK).body("location enable:"+value);
     }
 
     @PostMapping("/wardens")
@@ -149,16 +149,39 @@ public class AdminController {
             logger.error("deleteWarden: cannot find " + id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found " + id);
         }
+        //remove relavant warden for related locations
+        List<Location> locations = locationRepo.findByWarden(warden);
+        for (int i = 0; i < locations.size(); ++i) {
+            Location l = locations.get(i);
+            l.setWarden(null);
+            locationRepo.save(l);
+        }
+
         wardenRepo.deleteById(id);
         logger.info("deleteWarden: deleted: "+id);
         return ResponseEntity.status(HttpStatus.OK).body("deleted " + id);
     }
 
-    @PutMapping("/wardens/{warden-id}")
-    public ResponseEntity<Warden> updateWarden(@PathVariable("warden-id") int xx, @RequestBody Warden warden) {
-        Warden w =wardenRepo.findById(xx).orElse(null);
+    @DeleteMapping("/wardens")
+    public ResponseEntity<String> deleteAllWardens() {
+        //remove relavant warden for related locations
+        List<Location> locations = locationRepo.findAll();
+        for (int i = 0; i < locations.size(); ++i) {
+            Location l = locations.get(i);
+            l.setWarden(null);
+            locationRepo.save(l);
+        }
+
+        wardenRepo.deleteAll();
+        logger.info("deleteWarden: all deleted:");
+        return ResponseEntity.status(HttpStatus.OK).body("deleted all");
+    }
+
+    @PutMapping("/wardens/{xx}")
+    public ResponseEntity<Warden> updateWarden(@PathVariable("xx") int id, @RequestBody Warden warden) {
+        Warden w =wardenRepo.findById(id).orElse(null);
         if (w == null) {
-            logger.error("updateWarden: cannot find warden id:"+ xx);
+            logger.error("updateWarden: cannot find warden id:"+ id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         if (!warden.getAddress().isEmpty()) {
@@ -178,12 +201,12 @@ public class AdminController {
         }
         wardenRepo.save(w);
 
-        logger.error("updateWarden: cannot find warden id:"+ xx);
+        logger.error("updateWarden: cannot find warden id:"+ id);
         return ResponseEntity.status(HttpStatus.OK).body(w);
     }
 
-    @PutMapping("/assign/{warden-id}")
-    public ResponseEntity<String> assignSlots(@PathVariable("warden-id") int xx, @RequestBody Location location){
+    @PutMapping("/assign")
+    public ResponseEntity<String> assignSlots(@RequestParam("warden-id") int xx, @RequestBody Location location){
        Warden w=wardenRepo.findById(xx).orElse(null);
        if(w == null) {
            logger.error("assignSlots: cannot find warden "+xx);
@@ -206,6 +229,7 @@ public class AdminController {
        }
        l.setWarden(w);
        locationRepo.save(l);
-       return ResponseEntity.status(HttpStatus.OK).body("set warden:");
+        logger.error("assignSlots: warden:"+ xx + " assigned to location:"+ l.getId());
+       return ResponseEntity.status(HttpStatus.OK).body("set warden:"+xx +"to location:"+l.getId());
     }
 }
