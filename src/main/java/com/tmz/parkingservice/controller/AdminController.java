@@ -22,7 +22,6 @@ public class AdminController {
     LocationRepo locationRepo;
     @Autowired
     WardenRepo wardenRepo;
-
     final static Logger logger = Logger.getLogger(AdminController.class);
 
     @PostMapping("/test")

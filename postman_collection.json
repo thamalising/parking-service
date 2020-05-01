@@ -1,0 +1,506 @@
+{
+	"info": {
+		"_postman_id": "6dbf785b-3c59-4020-8dba-c2ea10542f79",
+		"name": "parking-system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "[a]add-warden",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"sumanapala\",\n\t\"nic\": \"762423050v\",\n\t\"mobile\":\"719372908\",\n\t\"address\": \"No.988, kalutara\",\n\t\"email\": \"somapala@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wardens",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wardens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]get-wardens",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wardens",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wardens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]get-warden",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wardens/4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wardens",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]update-warden",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"slots\": [],\n        \"name\": \"sumanapala\",\n        \"nic\": \"762423050v\",\n        \"mobile\": \"0879372908\",\n        \"address\": \"moratuwa\",\n        \"email\": \"sumana@gmail.com\"\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wardens/5",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wardens",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]delete-warden",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/wardens/4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wardens",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]delete-wardens",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/wardens",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wardens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]add-location",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"lon\":5323.4,\n\"lat\":35.3,\n\"lname\":\"Liberty\",\n\"city\":\"colombo\",\n\"slots\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/locations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[d]my-locations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"lon\":5323.4,\n\"lat\":35.3,\n\"lname\":\"Liberty\",\n\"city\":\"colombo\",\n\"slots\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/my-locations/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"my-locations",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[d]availability",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"lon\":5323.4,\n\"lat\":35.3,\n\"lname\":\"Liberty\",\n\"city\":\"colombo\",\n\"slots\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/availability/plus?location-id=17",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"availability",
+						"plus"
+					],
+					"query": [
+						{
+							"key": "location-id",
+							"value": "17"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]get-locations",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"lon\":5323.4,\n\"lat\":35.3,\n\"lname\":\"Liberty\",\n\"city\":\"colombo\",\n\"slots\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/locations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]get-location",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"lon\":5323.4,\n\"lat\":35.3,\n\"lname\":\"Liberty\",\n\"city\":\"colombo\",\n\"slots\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/locations/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"locations",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]update-location",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"lon\":532.4,\n\"lat\":35.3,\n\"lname\":\"Liberty\",\n\"city\":\"colombo\",\n\"slots\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/locations/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"locations",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]assign",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"id\": 20\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/assign?warden-id=6",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"assign"
+					],
+					"query": [
+						{
+							"key": "warden-id",
+							"value": "6"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]detach-warden",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/detach/8",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"detach",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]approve",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"id\": 20\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/approve/8",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"approve",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]enable-location",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/locations-enable?id=1&enable=true",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"locations-enable"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						},
+						{
+							"key": "enable",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]delete-location",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"lon\":532.4,\n\"lat\":35.3,\n\"lname\":\"Liberty\",\n\"city\":\"colombo\",\n\"slots\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/locations/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"locations",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[a]delete-locations",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"lon\":532.4,\n\"lat\":35.3,\n\"lname\":\"Liberty\",\n\"city\":\"colombo\",\n\"slots\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/locations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"locations"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

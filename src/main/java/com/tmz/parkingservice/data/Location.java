@@ -1,5 +1,6 @@
 package com.tmz.parkingservice.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -33,6 +34,17 @@ public class Location {
     @ManyToOne(targetEntity = Warden.class)
     @JoinColumn(name="wid")
     private Warden warden;
+
+    @JsonIgnore
+    private int busyNumOfSlots = 0;
+
+    public int getBusyNumOfSlots() {
+        return busyNumOfSlots;
+    }
+
+    public void setBusyNumOfSlots(int busyNumOfSlots) {
+        this.busyNumOfSlots = busyNumOfSlots;
+    }
 
     public Warden getWarden() {
         return warden;
