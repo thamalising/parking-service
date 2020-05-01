@@ -18,7 +18,7 @@ public class WardenController {
     LocationRepo locationRepo;
     @Autowired
     WardenRepo wardenRepo;
-    final static Logger logger = Logger.getLogger(AdminController.class);
+    final static Logger logger = Logger.getLogger(WardenController.class);
 
     @PostMapping("/my-locations/{xx}")
     public ResponseEntity<List<Location>> getAssignedLocations(@PathVariable("xx") int id) {

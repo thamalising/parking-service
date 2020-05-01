@@ -3,18 +3,15 @@ package com.tmz.parkingservice.controller;
 import com.tmz.parkingservice.dao.LocationRepo;
 import com.tmz.parkingservice.dao.WardenRepo;
 import com.tmz.parkingservice.data.Location;
-import com.tmz.parkingservice.data.Test;
 import com.tmz.parkingservice.data.Warden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+
 import org.apache.log4j.Logger;
-import org.springframework.web.servlet.function.EntityResponse;
 
 @RestController
 public class AdminController {
@@ -23,12 +20,6 @@ public class AdminController {
     @Autowired
     WardenRepo wardenRepo;
     final static Logger logger = Logger.getLogger(AdminController.class);
-
-    @PostMapping("/test")
-    public ResponseEntity<Test> test(@RequestBody Test test) {
-        logger.info("test: " + test.toString());
-        return ResponseEntity.status(HttpStatus.OK).body(test);
-    }
 
     @PostMapping("/locations")
     public ResponseEntity<Location> addLocation(@RequestBody Location location) {

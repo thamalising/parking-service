@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "[a]add-warden",
+			"name": "[admin]add-warden",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -33,7 +33,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]get-wardens",
+			"name": "[admin]get-wardens",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -51,7 +51,37 @@
 			"response": []
 		},
 		{
-			"name": "[a]get-warden",
+			"name": "[driver]get-parking-locations",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"lon\":424,\n\t\"lat\": 55.4,\n\t\"radius\":10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/parking-locations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"parking-locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin]get-warden",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -70,7 +100,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]update-warden",
+			"name": "[admin]update-warden",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -98,7 +128,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]delete-warden",
+			"name": "[admin]delete-warden",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -107,21 +137,21 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/wardens/4",
+					"raw": "localhost:8080/wardens/6",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"wardens",
-						"4"
+						"6"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "[a]delete-wardens",
+			"name": "[admin]delete-wardens",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -143,7 +173,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]add-location",
+			"name": "[admin]add-location",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -170,7 +200,7 @@
 			"response": []
 		},
 		{
-			"name": "[d]my-locations",
+			"name": "[warden]my-locations",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -184,21 +214,21 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/my-locations/2",
+					"raw": "localhost:8080/my-locations/12",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"my-locations",
-						"2"
+						"12"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "[d]availability",
+			"name": "[warden]availability",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -212,19 +242,19 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/availability/plus?location-id=17",
+					"raw": "localhost:8080/availability/minus?location-id=1",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"availability",
-						"plus"
+						"minus"
 					],
 					"query": [
 						{
 							"key": "location-id",
-							"value": "17"
+							"value": "1"
 						}
 					]
 				}
@@ -232,7 +262,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]get-locations",
+			"name": "[admin]get-locations",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -262,7 +292,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]get-location",
+			"name": "[admin]get-location",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -293,7 +323,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]update-location",
+			"name": "[admin]update-location",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -321,13 +351,13 @@
 			"response": []
 		},
 		{
-			"name": "[a]assign",
+			"name": "[admin]assign",
 			"request": {
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"id\": 20\n}",
+					"raw": "{\n\t\"id\":24,\n\"lname\":\"Liberty\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -335,7 +365,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/assign?warden-id=6",
+					"raw": "localhost:8080/assign?warden-id=12",
 					"host": [
 						"localhost"
 					],
@@ -346,7 +376,7 @@
 					"query": [
 						{
 							"key": "warden-id",
-							"value": "6"
+							"value": "12"
 						}
 					]
 				}
@@ -354,7 +384,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]detach-warden",
+			"name": "[admin]detach-warden",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -382,7 +412,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]approve",
+			"name": "[admin]approve",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -396,21 +426,21 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/approve/8",
+					"raw": "localhost:8080/approve/12",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"approve",
-						"8"
+						"12"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "[a]enable-location",
+			"name": "[admin]enable-location",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -447,7 +477,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]delete-location",
+			"name": "[admin]delete-location",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -475,7 +505,7 @@
 			"response": []
 		},
 		{
-			"name": "[a]delete-locations",
+			"name": "[admin]delete-locations",
 			"request": {
 				"method": "DELETE",
 				"header": [],
