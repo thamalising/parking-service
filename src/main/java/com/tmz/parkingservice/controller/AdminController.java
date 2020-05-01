@@ -102,6 +102,7 @@ public class AdminController {
         logger.info("deleteAll: success");
     }
 
+    // suspend locations temporarory
     @PutMapping("/locations-enable")
     public ResponseEntity<String> enableSlot(@RequestParam("id") int id, @RequestParam("enable") boolean value){
         Location l = locationRepo.findById(id).orElse(null);
@@ -213,6 +214,11 @@ public class AdminController {
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found"+xx);
        }
 
+       if (!w.isRegistered()) {
+           logger.error("assignSlots: not a registered warden "+xx);
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).body("forbidden warden:"+xx);
+       }
+
        Location l = locationRepo.findById(location.getId()).orElse(null);
        if(l == null) {
            if (!location.getLocationName().isEmpty()) {
@@ -231,5 +237,38 @@ public class AdminController {
        locationRepo.save(l);
         logger.error("assignSlots: warden:"+ xx + " assigned to location:"+ l.getId());
        return ResponseEntity.status(HttpStatus.OK).body("set warden:"+xx +"to location:"+l.getId());
+    }
+
+    @PutMapping("/approve/{xx}")
+    public ResponseEntity<String> approveRegisteredWarden(@PathVariable("xx") int id) {
+        Warden w = wardenRepo.findById(id).orElse(null);
+        if (w == null) {
+            logger.error("approveRegisteredWarden: cannot find warden:" + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("warden:"+id +" not found");
+        }
+        w.setRegistered(true);
+        wardenRepo.save(w);
+        logger.info("approveRegisteredWarden: approved warden :" + w.toString());
+        return ResponseEntity.status(HttpStatus.OK).body("approved warden:" + id);
+    }
+
+    // detach warden from all locations
+    @PutMapping("/detach/{xx}")
+    public ResponseEntity<String> detachWarden(@PathVariable("xx") int id) {
+        Warden warden = wardenRepo.findById(id).orElse(null);
+        if (warden==null) {
+            logger.error("detachWarden: cannot find " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found " + id);
+        }
+        //remove relavant warden for related locations
+        List<Location> locations = locationRepo.findByWarden(warden);
+        for (int i = 0; i < locations.size(); ++i) {
+            Location l = locations.get(i);
+            l.setWarden(null);
+            locationRepo.save(l);
+        }
+
+        logger.info("detachWarden: detached: "+id);
+        return ResponseEntity.status(HttpStatus.OK).body("deleted " + id);
     }
 }

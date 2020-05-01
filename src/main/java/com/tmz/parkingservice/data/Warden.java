@@ -1,5 +1,6 @@
 package com.tmz.parkingservice.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -29,16 +30,16 @@ public class Warden {
     @JsonProperty("email")
     private String email;
 
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy="id")
-//    private List<Location> slots;
-//
-//    public List<Location> getSlots() {
-//        return slots;
-//    }
-//
-//    public void setSlots(List<Location> slots) {
-//        this.slots = slots;
-//    }
+    @JsonIgnore
+    private boolean registered = false;
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
 
     public int getId() {
         return id;
