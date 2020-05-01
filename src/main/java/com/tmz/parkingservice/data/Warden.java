@@ -10,7 +10,8 @@ import java.util.Set;
 @Table(name="warden")
 public class Warden {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @JsonProperty("name")
@@ -27,17 +28,6 @@ public class Warden {
 
     @JsonProperty("email")
     private String email;
-
-//    @OneToMany(mappedBy="id")
-//    private List<Location> slots;
-//
-//    public List<Location> getSlots() {
-//        return slots;
-//    }
-//
-//    public void setSlots(List<Location> slots) {
-//        this.slots = slots;
-//    }
 
     public int getId() {
         return id;

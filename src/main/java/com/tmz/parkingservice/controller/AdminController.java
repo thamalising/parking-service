@@ -115,6 +115,14 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body("location enable:"+location.isEnable());
     }
 
+    @PostMapping("/wardens")
+    public Warden addWarden(@RequestBody Warden warden) {
+        logger.info("addWarden: " + warden);
+        wardenRepo.save(warden);
+        logger.debug("addWarden: " + warden.toString());
+        return warden;
+    }
+
     @GetMapping("/wardens")
     public ResponseEntity<List<Warden>> getWardens() {
         List<Warden> ret = wardenRepo.findAll();
@@ -146,6 +154,34 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body("deleted " + id);
     }
 
+    @PutMapping("/wardens/{warden-id}")
+    public ResponseEntity<Warden> updateWarden(@PathVariable("warden-id") int xx, @RequestBody Warden warden) {
+        Warden w =wardenRepo.findById(xx).orElse(null);
+        if (w == null) {
+            logger.error("updateWarden: cannot find warden id:"+ xx);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        if (!warden.getAddress().isEmpty()) {
+            w.setAddress(warden.getAddress());
+        }
+        if (!warden.getEmail().isEmpty()) {
+            w.setEmail(warden.getEmail());
+        }
+        if (!warden.getMobileNO().isEmpty()) {
+            w.setMobileNO(warden.getMobileNO());
+        }
+        if (!warden.getName().isEmpty()) {
+            w.setName(warden.getName());
+        }
+        if (!warden.getNic().isEmpty()) {
+            w.setNic(warden.getNic());
+        }
+        wardenRepo.save(w);
+
+        logger.error("updateWarden: cannot find warden id:"+ xx);
+        return ResponseEntity.status(HttpStatus.OK).body(w);
+    }
+
     @PutMapping("/assign/{warden-id}")
     public ResponseEntity<String> assignSlots(@PathVariable("warden-id") int xx, @RequestBody Location location){
        Warden w=wardenRepo.findById(xx).orElse(null);
@@ -158,16 +194,18 @@ public class AdminController {
        if(l == null) {
            if (!location.getLocationName().isEmpty()) {
                List<Location> locations =locationRepo.findByLocationName(location.getLocationName());
-                for(int i=0;i<locations.size();i++){
+                for(int i=0;i<locations.size();i++) {
                     Location l2 = locations.get(i);
-                    l2.setWarden(w); ??
-
+                    l2.setWarden(w);
+                    locationRepo.save(l2);
                 }
+               return ResponseEntity.status(HttpStatus.OK).body("set warden for " + locations.size() + " locations");
            }
            logger.error("assignSlots: no lname or id ");
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no lname or id");
        }
        l.setWarden(w);
+       locationRepo.save(l);
        return ResponseEntity.status(HttpStatus.OK).body("set warden:");
     }
 }

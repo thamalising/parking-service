@@ -8,7 +8,8 @@ import javax.persistence.*;
 @Table(name="location")
 public class Location {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @JsonProperty("lon")
@@ -29,8 +30,8 @@ public class Location {
     @JsonProperty("enable")
     private boolean enable = true;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="warden_idd", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Warden.class)
+    @JoinColumn(name="wid")
     private Warden warden;
 
     public Warden getWarden() {
