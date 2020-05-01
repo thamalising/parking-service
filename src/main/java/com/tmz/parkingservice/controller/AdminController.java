@@ -62,7 +62,7 @@ public class AdminController {
             l.setLatitude(location.getLatitude());
         if(location.getLongitude()>0)
             l.setLongitude(location.getLongitude());
-        if(location.getCity().isEmpty())
+        if(!location.getCity().isEmpty())
             l.setCity(location.getCity());
         if(location.getNumOfSlots()>0)
             l.setNumOfSlots(location.getNumOfSlots());
@@ -204,11 +204,6 @@ public class AdminController {
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found"+xx);
        }
 
-       if (!w.isRegistered()) {
-           logger.error("assignSlots: not a registered warden "+xx);
-           return ResponseEntity.status(HttpStatus.FORBIDDEN).body("forbidden warden:"+xx);
-       }
-
        Location l = locationRepo.findById(location.getId()).orElse(null);
        if(l == null) {
            if (!location.getLocationName().isEmpty()) {
@@ -227,19 +222,6 @@ public class AdminController {
        locationRepo.save(l);
         logger.error("assignSlots: warden:"+ xx + " assigned to location:"+ l.getId());
        return ResponseEntity.status(HttpStatus.OK).body("set warden:"+xx +"to location:"+l.getId());
-    }
-
-    @PutMapping("/approve/{xx}")
-    public ResponseEntity<String> approveRegisteredWarden(@PathVariable("xx") int id) {
-        Warden w = wardenRepo.findById(id).orElse(null);
-        if (w == null) {
-            logger.error("approveRegisteredWarden: cannot find warden:" + id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("warden:"+id +" not found");
-        }
-        w.setRegistered(true);
-        wardenRepo.save(w);
-        logger.info("approveRegisteredWarden: approved warden :" + w.toString());
-        return ResponseEntity.status(HttpStatus.OK).body("approved warden:" + id);
     }
 
     // detach warden from all locations

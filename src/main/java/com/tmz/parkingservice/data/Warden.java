@@ -30,17 +30,6 @@ public class Warden {
     @JsonProperty("email")
     private String email;
 
-    @JsonIgnore
-    private boolean registered = false;
-
-    public boolean isRegistered() {
-        return registered;
-    }
-
-    public void setRegistered(boolean registered) {
-        this.registered = registered;
-    }
-
     public int getId() {
         return id;
     }
