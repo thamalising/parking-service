@@ -21,6 +21,7 @@ public class AdminController {
     WardenRepo wardenRepo;
     final static Logger logger = Logger.getLogger(AdminController.class);
 
+    @CrossOrigin
     @PostMapping("/locations")
     public ResponseEntity<Location> addLocation(@RequestBody Location location) {
         logger.info("addLocation: " + location.toString());
@@ -29,6 +30,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(location);
     }
 
+    @CrossOrigin
     @GetMapping("/locations")
     public ResponseEntity<List<Location>> getLocations() {
         List<Location> ret = locationRepo.findAll();
@@ -37,6 +39,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
+    @CrossOrigin
     @GetMapping("/locations/{xx}")
     public ResponseEntity<Location> getLocation(@PathVariable("xx") int id) {
         Location location = locationRepo.findById(id).orElse(null);
@@ -49,6 +52,7 @@ public class AdminController {
         return new ResponseEntity<>(location, HttpStatus.OK);
     }
 
+    @CrossOrigin
     @PutMapping("/locations/{xx}")
     public ResponseEntity<Location> updateLocation(@PathVariable("xx") int id, @RequestBody Location location) {
         Location l = locationRepo.findById(id).orElse(null);
@@ -72,6 +76,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(l);
     }
 
+    @CrossOrigin
     @DeleteMapping("/locations/{xx}")
     public ResponseEntity<String> deleteLocation(@PathVariable("xx") int id) {
         Location l = locationRepo.findById(id).orElse(null);
@@ -85,6 +90,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body("deleted: "+ id);
     }
 
+    @CrossOrigin
     @DeleteMapping("locations")
     public void deleteAll()
     {
@@ -93,6 +99,7 @@ public class AdminController {
     }
 
     // suspend locations temporarory
+    @CrossOrigin
     @PutMapping("/locations-enable")
     public ResponseEntity<String> enableSlot(@RequestParam("id") int id, @RequestParam("enable") boolean value){
         Location l = locationRepo.findById(id).orElse(null);
@@ -106,6 +113,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body("location enable:"+value);
     }
 
+    @CrossOrigin
     @PostMapping("/wardens")
     public Warden addWarden(@RequestBody Warden warden) {
         logger.info("addWarden: " + warden);
@@ -114,6 +122,7 @@ public class AdminController {
         return warden;
     }
 
+    @CrossOrigin
     @GetMapping("/wardens")
     public ResponseEntity<List<Warden>> getWardens() {
         List<Warden> ret = wardenRepo.findAll();
@@ -121,6 +130,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
+    @CrossOrigin
     @GetMapping("/wardens/{xx}")
     public ResponseEntity<Warden> getWarden(@PathVariable("xx") int id) {
         Warden warden = wardenRepo.findById(id).orElse(null);
@@ -133,6 +143,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(warden);
     }
 
+    @CrossOrigin
     @DeleteMapping("/wardens/{xx}")
     public ResponseEntity<String> deleteWarden(@PathVariable("xx") int id) {
         Warden warden = wardenRepo.findById(id).orElse(null);
@@ -153,6 +164,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body("deleted " + id);
     }
 
+    @CrossOrigin
     @DeleteMapping("/wardens")
     public ResponseEntity<String> deleteAllWardens() {
         //remove relavant warden for related locations
@@ -168,6 +180,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body("deleted all");
     }
 
+    @CrossOrigin
     @PutMapping("/wardens/{xx}")
     public ResponseEntity<Warden> updateWarden(@PathVariable("xx") int id, @RequestBody Warden warden) {
         Warden w =wardenRepo.findById(id).orElse(null);
@@ -196,6 +209,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(w);
     }
 
+    @CrossOrigin
     @PutMapping("/assign")
     public ResponseEntity<String> assignSlots(@RequestParam("warden-id") int xx, @RequestBody Location location){
        Warden w=wardenRepo.findById(xx).orElse(null);
@@ -225,6 +239,7 @@ public class AdminController {
     }
 
     // detach warden from all locations
+    @CrossOrigin
     @PutMapping("/detach/{xx}")
     public ResponseEntity<String> detachWarden(@PathVariable("xx") int id) {
         Warden warden = wardenRepo.findById(id).orElse(null);

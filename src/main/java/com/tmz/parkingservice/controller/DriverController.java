@@ -19,6 +19,7 @@ public class DriverController {
     LocationRepo locationRepo;
     final static Logger logger = Logger.getLogger(DriverController.class);
 
+    @CrossOrigin
     @GetMapping("/parking-locations")
     public ResponseEntity<List<Location>> getParkingLocations(@RequestBody Driver driver) {
 

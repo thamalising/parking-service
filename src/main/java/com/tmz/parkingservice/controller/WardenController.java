@@ -20,6 +20,7 @@ public class WardenController {
     WardenRepo wardenRepo;
     final static Logger logger = Logger.getLogger(WardenController.class);
 
+    @CrossOrigin
     @PostMapping("/my-locations/{xx}")
     public ResponseEntity<List<Location>> getAssignedLocations(@PathVariable("xx") int id) {
         Warden w = wardenRepo.findById(id).orElse(null);
@@ -33,6 +34,7 @@ public class WardenController {
         return ResponseEntity.status(HttpStatus.OK).body(locations);
     }
 
+    @CrossOrigin
     @PutMapping("/availability/{op}")
     public ResponseEntity<Integer> updateAvailability(@RequestParam("location-id") int id, @PathVariable("op") String op) {
         Location l = locationRepo.findById(id).orElse(null);
