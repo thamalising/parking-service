@@ -30,6 +30,30 @@ public class Warden {
     @JsonProperty("email")
     private String email;
 
+    @JsonIgnore
+    private int responsibleLocations = 0;
+
+    @JsonProperty("color")
+    private String color = "#DAF7A6";
+
+    private void updateColorCode()
+    {
+        if (responsibleLocations < 1) color = "#DAF7A6";
+        else if (responsibleLocations == 1 || responsibleLocations == 2) color = "#FFC300";
+        else if (responsibleLocations == 3 || responsibleLocations == 4) color = "#FF5733";
+        else if (responsibleLocations > 4) color = "#900C3F";
+    }
+
+    public void increaseLocationCount() {
+        ++responsibleLocations;
+        updateColorCode();
+    }
+
+    public void decreaseLocationCount() {
+        --responsibleLocations;
+        updateColorCode();
+    }
+
     public int getId() {
         return id;
     }

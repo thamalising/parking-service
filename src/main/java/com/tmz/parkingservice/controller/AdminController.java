@@ -225,14 +225,17 @@ public class AdminController {
                 for(int i=0;i<locations.size();i++) {
                     Location l2 = locations.get(i);
                     l2.setWarden(w);
+                    w.increaseLocationCount();
                     locationRepo.save(l2);
                 }
-               return ResponseEntity.status(HttpStatus.OK).body("set warden for " + locations.size() + " locations");
+                if (locations.size() > 0)
+                    return ResponseEntity.status(HttpStatus.OK).body("set warden for " + locations.size() + " locations");
            }
            logger.error("assignSlots: no lname or id ");
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no lname or id");
        }
        l.setWarden(w);
+        w.increaseLocationCount();
        locationRepo.save(l);
         logger.error("assignSlots: warden:"+ xx + " assigned to location:"+ l.getId());
        return ResponseEntity.status(HttpStatus.OK).body("set warden:"+xx +"to location:"+l.getId());
@@ -252,6 +255,7 @@ public class AdminController {
         for (int i = 0; i < locations.size(); ++i) {
             Location l = locations.get(i);
             l.setWarden(null);
+            warden.decreaseLocationCount();
             locationRepo.save(l);
         }
 
