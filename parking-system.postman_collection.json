@@ -106,7 +106,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\n        \"slots\": [],\n        \"name\": \"sumanapala\",\n        \"nic\": \"762423050v\",\n        \"mobile\": \"0879372908\",\n        \"address\": \"moratuwa\",\n        \"email\": \"sumana@gmail.com\"\n    }",
+					"raw": "    {\n        \"name\": \"sumanapala\",\n        \"nic\": \"762423050V\",\n        \"mobile\": \"0879372908\",\n        \"address\": \"moratuwa\",\n        \"email\": \"sumana@gmail.com\"\n    }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -114,14 +114,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/wardens/5",
+					"raw": "localhost:8080/wardens/36",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"wardens",
-						"5"
+						"36"
 					]
 				}
 			},
@@ -365,7 +365,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/assign?warden-id=12",
+					"raw": "localhost:8080/assign?warden-id=2",
 					"host": [
 						"localhost"
 					],
@@ -376,7 +376,7 @@
 					"query": [
 						{
 							"key": "warden-id",
-							"value": "12"
+							"value": "2"
 						}
 					]
 				}
@@ -384,7 +384,7 @@
 			"response": []
 		},
 		{
-			"name": "[admin]detach-warden",
+			"name": "[admin]locations_freed",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -398,78 +398,19 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/detach/8",
+					"raw": "localhost:8080/locations/detach?location-id=1",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"detach",
-						"8"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[admin]approve",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\"id\": 20\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/approve/12",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"approve",
-						"12"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[admin]enable-location",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/locations-enable?id=1&enable=true",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"locations-enable"
+						"locations",
+						"detach"
 					],
 					"query": [
 						{
-							"key": "id",
+							"key": "location-id",
 							"value": "1"
-						},
-						{
-							"key": "enable",
-							"value": "true"
 						}
 					]
 				}
