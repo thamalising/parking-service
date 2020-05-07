@@ -13,6 +13,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import javax.websocket.server.PathParam;
+
 @RestController
 public class AdminController {
     @Autowired
@@ -70,7 +72,15 @@ public class AdminController {
             l.setCity(location.getCity());
         if(location.getNumOfSlots()>0)
             l.setNumOfSlots(location.getNumOfSlots());
-        l.setWarden(null);
+        // if there is location update related warden ??
+        // for now he will keep
+//        Warden w = l.getWarden();
+//        if (l != null) {
+//            w.setResponsibleLocations(w.getResponsibleLocations() - 1 );
+//            w.updateColorCode();
+//            wardenRepo.save(w);
+//        }
+//        l.setWarden(null);
         locationRepo.save(l);
         logger.info("updateLocation: updated success xx:"+id+ " location:"+l.toString());
         return ResponseEntity.status(HttpStatus.OK).body(l);
@@ -83,6 +93,14 @@ public class AdminController {
         if (l==null){
             logger.error("deleteLocation:  cannot find:"+id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("cannot find: "+id);
+        }
+
+        // remove related location from warden
+        Warden w = l.getWarden();
+        if (w != null) {
+            w.setResponsibleLocations(w.getResponsibleLocations() - 1);
+            w.updateColorCode();
+            wardenRepo.save(w);
         }
 
         locationRepo.deleteById(id);
@@ -100,17 +118,23 @@ public class AdminController {
 
     // suspend locations temporarory
     @CrossOrigin
-    @PutMapping("/locations-enable")
-    public ResponseEntity<String> enableSlot(@RequestParam("id") int id, @RequestParam("enable") boolean value){
+    @PutMapping("/locations/detach")
+    public ResponseEntity<String> disableSlot(@RequestParam("location-id") int id){
         Location l = locationRepo.findById(id).orElse(null);
         if (l == null) {
-            logger.error("enableSlot failed, id:" + id + " not found");
+            logger.error("disableSlot failed, id:" + id + " not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
         }
-        logger.info("enableSlot success, id:" + id + " enable:" + value);
-        l.setEnable(value);
+        logger.info("disableSlot success, id:" + id);
+        Warden w = l.getWarden();
+        if (w != null) {
+            w.setResponsibleLocations(w.getResponsibleLocations() - 1);
+            w.updateColorCode();
+            wardenRepo.save(w);
+        }
+        l.setWarden(null);
         locationRepo.save(l);
-        return ResponseEntity.status(HttpStatus.OK).body("location enable:"+value);
+        return ResponseEntity.status(HttpStatus.OK).body("location disabled:"+id);
     }
 
     @CrossOrigin
@@ -205,60 +229,55 @@ public class AdminController {
         }
         wardenRepo.save(w);
 
-        logger.error("updateWarden: cannot find warden id:"+ id);
+        logger.info("updateWarden: warden id:"+ id);
         return ResponseEntity.status(HttpStatus.OK).body(w);
     }
 
     @CrossOrigin
     @PutMapping("/assign")
-    public ResponseEntity<String> assignSlots(@RequestParam("warden-id") int xx, @RequestBody Location location){
-       Warden w=wardenRepo.findById(xx).orElse(null);
-       if(w == null) {
-           logger.error("assignSlots: cannot find warden "+xx);
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found"+xx);
-       }
-
+    public synchronized ResponseEntity<String> assignSlots(@RequestParam("warden-id") int xx, @RequestBody Location location){
        Location l = locationRepo.findById(location.getId()).orElse(null);
        if(l == null) {
-           if (!location.getLocationName().isEmpty()) {
-               List<Location> locations =locationRepo.findByLocationName(location.getLocationName());
-                for(int i=0;i<locations.size();i++) {
-                    Location l2 = locations.get(i);
-                    l2.setWarden(w);
-                    w.increaseLocationCount();
-                    locationRepo.save(l2);
-                }
-                if (locations.size() > 0)
-                    return ResponseEntity.status(HttpStatus.OK).body("set warden for " + locations.size() + " locations");
-           }
            logger.error("assignSlots: no lname or id ");
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no lname or id");
        }
-       l.setWarden(w);
-        w.increaseLocationCount();
-       locationRepo.save(l);
-        logger.error("assignSlots: warden:"+ xx + " assigned to location:"+ l.getId());
-       return ResponseEntity.status(HttpStatus.OK).body("set warden:"+xx +"to location:"+l.getId());
+
+        Warden w=wardenRepo.findById(xx).orElse(null);
+        if(w == null) {
+            logger.error("assignSlots: cannot find warden "+xx);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found"+xx);
+        }
+        w.setResponsibleLocations(w.getResponsibleLocations() + 1);
+        w.updateColorCode();
+        wardenRepo.save(w);
+
+        l.setWarden(w);
+        locationRepo.save(l);
+
+        logger.info("assignSlots: warden:"+ xx + " assigned to location:"+ l.getId());
+        return ResponseEntity.status(HttpStatus.OK).body("set warden:"+xx +"to location:"+l.getId());
     }
 
     // detach warden from all locations
     @CrossOrigin
     @PutMapping("/detach/{xx}")
     public ResponseEntity<String> detachWarden(@PathVariable("xx") int id) {
-        Warden warden = wardenRepo.findById(id).orElse(null);
-        if (warden==null) {
+        Warden w = wardenRepo.findById(id).orElse(null);
+        if (w==null) {
             logger.error("detachWarden: cannot find " + id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found " + id);
         }
         //remove relavant warden for related locations
-        List<Location> locations = locationRepo.findByWarden(warden);
+        List<Location> locations = locationRepo.findByWarden(w);
         for (int i = 0; i < locations.size(); ++i) {
             Location l = locations.get(i);
             l.setWarden(null);
-            warden.decreaseLocationCount();
             locationRepo.save(l);
         }
 
+        w.setResponsibleLocations(0);
+        w.updateColorCode();
+        wardenRepo.save(w);
         logger.info("detachWarden: detached: "+id);
         return ResponseEntity.status(HttpStatus.OK).body("deleted " + id);
     }

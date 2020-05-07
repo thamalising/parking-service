@@ -28,9 +28,6 @@ public class Location {
     @JsonProperty("slots")
     private int numOfSlots;
 
-    @JsonProperty("enable")
-    private boolean enable = true;
-
     @ManyToOne(targetEntity = Warden.class)
     @JoinColumn(name="wid")
     private Warden warden;
@@ -52,14 +49,6 @@ public class Location {
 
     public void setWarden(Warden warden) {
         this.warden = warden;
-    }
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     public int getId() {

@@ -30,28 +30,31 @@ public class Warden {
     @JsonProperty("email")
     private String email;
 
-    @JsonIgnore
-    private int responsibleLocations = 0;
+    public int getResponsibleLocations() {
+        return responsibleLocations;
+    }
+
+    public void setResponsibleLocations(int responsibleLocations) {
+        this.responsibleLocations = responsibleLocations;
+    }
+
+    @JsonProperty("locations")
+    private int responsibleLocations ;
 
     @JsonProperty("color")
-    private String color = "#DAF7A6";
+    private String color = "#FFFFFF";
 
-    private void updateColorCode()
+    public void updateColorCode()
     {
-        if (responsibleLocations < 1) color = "#DAF7A6";
-        else if (responsibleLocations == 1 || responsibleLocations == 2) color = "#FFC300";
-        else if (responsibleLocations == 3 || responsibleLocations == 4) color = "#FF5733";
-        else if (responsibleLocations > 4) color = "#900C3F";
-    }
-
-    public void increaseLocationCount() {
-        ++responsibleLocations;
-        updateColorCode();
-    }
-
-    public void decreaseLocationCount() {
-        --responsibleLocations;
-        updateColorCode();
+        if (responsibleLocations < 1) {
+            responsibleLocations = 0;
+            color = "#FFFFFF";
+        }
+        else if (responsibleLocations == 1) color = "#DAF7A6";
+        else if (responsibleLocations == 2) color = "#FFC300";
+        else if (responsibleLocations == 3) color = "#FF5733";
+        else if (responsibleLocations >= 4) color = "#900C3F";
+        System.out.println("responsibleLocations: " + responsibleLocations);
     }
 
     public int getId() {
