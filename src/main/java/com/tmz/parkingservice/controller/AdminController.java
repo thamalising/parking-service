@@ -3,6 +3,7 @@ package com.tmz.parkingservice.controller;
 import com.tmz.parkingservice.dao.LocationRepo;
 import com.tmz.parkingservice.dao.WardenRepo;
 import com.tmz.parkingservice.data.Location;
+import com.tmz.parkingservice.data.User;
 import com.tmz.parkingservice.data.Warden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -281,4 +282,17 @@ public class AdminController {
         logger.info("detachWarden: detached: "+id);
         return ResponseEntity.status(HttpStatus.OK).body("deleted " + id);
     }
+
+    @CrossOrigin
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user) {
+        boolean success = user.getUsername().equalsIgnoreCase("admin")
+                && user.getPassword().equalsIgnoreCase("admin");
+        logger.info("login: "+success );
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("login failed");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("login success");
+    }
+
 }

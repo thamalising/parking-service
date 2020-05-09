@@ -11,8 +11,5 @@ public class ParkingServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ParkingServiceApplication.class, args);
 		System.out.println("######### Parking System ########");
-//		ConfigurableApplicationContext context = SpringApplication.run(ParkingServiceApplication.class, args);
-//		Location location = context.getBean(Location.class);
-//		location.print();
 	}
 }
