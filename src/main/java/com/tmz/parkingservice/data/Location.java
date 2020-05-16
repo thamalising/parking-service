@@ -32,7 +32,7 @@ public class Location {
     @JoinColumn(name="wid")
     private Warden warden;
 
-    @JsonIgnore
+    @JsonProperty("bc")
     private int busyNumOfSlots = 0;
 
     public int getBusyNumOfSlots() {
