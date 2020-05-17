@@ -66,4 +66,15 @@ public class WardenController {
         logger.info("updateAvailability: location:" + id + " has "+ bcSlots + " locations");
         return ResponseEntity.status(HttpStatus.OK).body(bcSlots);
     }
+
+    @CrossOrigin
+    @GetMapping("/ami/{warden-id}")
+    public ResponseEntity<Warden> ami(@PathVariable("warden-id") int id) {
+
+        Warden w = wardenRepo.findById(id).orElse(null);
+        if (w == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(w);
+    }
 }
