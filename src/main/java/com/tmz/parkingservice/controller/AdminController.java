@@ -140,11 +140,11 @@ public class AdminController {
 
     @CrossOrigin
     @PostMapping("/wardens")
-    public Warden addWarden(@RequestBody Warden warden) {
+    public ResponseEntity <Warden> addWarden(@RequestBody Warden warden) {
         logger.info("addWarden: " + warden);
         wardenRepo.save(warden);
         logger.debug("addWarden: " + warden.toString());
-        return warden;
+        return ResponseEntity.status(HttpStatus.OK).body(warden);
     }
 
     @CrossOrigin
