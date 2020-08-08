@@ -21,7 +21,7 @@ public class WardenController {
     final static Logger logger = Logger.getLogger(WardenController.class);
 
     @CrossOrigin
-    @PostMapping("/my-locations/{xx}")
+    @GetMapping("/my-locations/{xx}")
     public ResponseEntity<List<Location>> getAssignedLocations(@PathVariable("xx") int id) {
         Warden w = wardenRepo.findById(id).orElse(null);
         if (w ==  null) {
