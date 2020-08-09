@@ -1,8 +1,10 @@
 package com.tmz.parkingservice.controller;
 
 import com.tmz.parkingservice.dao.LocationRepo;
+import com.tmz.parkingservice.dao.TokenRepo;
 import com.tmz.parkingservice.dao.WardenRepo;
 import com.tmz.parkingservice.data.Location;
+import com.tmz.parkingservice.data.Token;
 import com.tmz.parkingservice.data.Warden;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class WardenController {
@@ -18,6 +21,8 @@ public class WardenController {
     LocationRepo locationRepo;
     @Autowired
     WardenRepo wardenRepo;
+    @Autowired
+    TokenRepo tokenRepo;
     final static Logger logger = Logger.getLogger(WardenController.class);
 
     @CrossOrigin
@@ -68,13 +73,17 @@ public class WardenController {
     }
 
     @CrossOrigin
-    @GetMapping("/ami/{warden-id}")
-    public ResponseEntity<Warden> ami(@PathVariable("warden-id") int id) {
-
-        Warden w = wardenRepo.findById(id).orElse(null);
-        if (w == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    @GetMapping("/token/{xx}")
+    public ResponseEntity<String> useToken(@PathVariable("xx") String tok) {
+        Token tt = tokenRepo.findByValue(tok).orElse(null);
+        if (tt == null) {
+            logger.info("useTokem: not found " + tok);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(w);
+        String wid = Integer.toString(tt.getWardenId());
+        logger.info("useTokem: " + tok + " has "+ wid + " id");
+
+        return ResponseEntity.status(HttpStatus.OK).body(wid);
     }
+
 }

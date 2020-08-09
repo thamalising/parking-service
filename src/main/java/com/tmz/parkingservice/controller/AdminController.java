@@ -1,9 +1,12 @@
 package com.tmz.parkingservice.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tmz.parkingservice.dao.LocationRepo;
+import com.tmz.parkingservice.dao.TokenRepo;
 import com.tmz.parkingservice.dao.WardenRepo;
+import com.tmz.parkingservice.data.AdminUser;
 import com.tmz.parkingservice.data.Location;
-import com.tmz.parkingservice.data.User;
+import com.tmz.parkingservice.data.Token;
 import com.tmz.parkingservice.data.Warden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,14 +17,14 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import javax.websocket.server.PathParam;
-
 @RestController
 public class AdminController {
     @Autowired
     LocationRepo locationRepo;
     @Autowired
     WardenRepo wardenRepo;
+    @Autowired
+    TokenRepo tokenRepo;
     final static Logger logger = Logger.getLogger(AdminController.class);
 
     @CrossOrigin
@@ -73,15 +76,7 @@ public class AdminController {
             l.setCity(location.getCity());
         if(location.getNumOfSlots()>0)
             l.setNumOfSlots(location.getNumOfSlots());
-        // if there is location update related warden ??
-        // for now he will keep
-//        Warden w = l.getWarden();
-//        if (l != null) {
-//            w.setResponsibleLocations(w.getResponsibleLocations() - 1 );
-//            w.updateColorCode();
-//            wardenRepo.save(w);
-//        }
-//        l.setWarden(null);
+
         locationRepo.save(l);
         logger.info("updateLocation: updated success xx:"+id+ " location:"+l.toString());
         return ResponseEntity.status(HttpStatus.OK).body(l);
@@ -183,6 +178,11 @@ public class AdminController {
             l.setWarden(null);
             locationRepo.save(l);
         }
+        // check token for deletion
+        Token t = tokenRepo.findByWardenId(id).orElse(null);
+        if (t != null) {
+            tokenRepo.deleteById(t.getId());
+        }
 
         wardenRepo.deleteById(id);
         logger.info("deleteWarden: deleted: "+id);
@@ -259,7 +259,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body("set warden:"+xx +"to location:"+l.getId());
     }
 
-    // detach warden from all locations
+    //remove location/s from warden
     @CrossOrigin
     @PutMapping("/detach/{xx}")
     public ResponseEntity<String> detachWarden(@PathVariable("xx") int id) {
@@ -285,14 +285,38 @@ public class AdminController {
 
     @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        boolean success = user.getUsername().equalsIgnoreCase("admin")
-                && user.getPassword().equalsIgnoreCase("admin");
+    public ResponseEntity<String> login(@RequestBody AdminUser admin) {
+        boolean success = admin.getUsername().equalsIgnoreCase("admin")
+                && admin.getPassword().equalsIgnoreCase("admin");
         logger.info("login: "+success );
         if (!success) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("login failed");
         }
         return ResponseEntity.status(HttpStatus.OK).body("login success");
+    }
+
+    @CrossOrigin
+    @PostMapping("/token/{xx}")
+    public ResponseEntity<String> generateToken(@PathVariable("xx") int wid){
+
+        Token t = tokenRepo.findByWardenId(wid).orElse(null);
+        if (t == null) {
+            t = new Token();
+            t.setWardenId(wid);
+        }
+        // setToken internally
+        String value = t.generateToken();
+
+        tokenRepo.save(t);
+        return ResponseEntity.status(HttpStatus.OK).body(value);
+    }
+
+    @CrossOrigin
+    @GetMapping("/tokens")
+    public ResponseEntity<List<Token>> getTokens() {
+        List<Token> ts = tokenRepo.findAll();
+        logger.info("getTokens: ---" + ts.size());
+        return ResponseEntity.status(HttpStatus.OK).body(ts);
     }
 
 }
